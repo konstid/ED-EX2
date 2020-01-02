@@ -1,5 +1,4 @@
 import os
-import re
 
 from lxml import objectify
 import pandas as pd
@@ -29,6 +28,13 @@ def dir_contents(input_dir):
     return files
 
 
+def load_average_audio(path):
+    df = pd.read_csv(path, sep=',', header=None)
+    df = df.fillna(0)
+    avg = df.mean(axis=1)
+    return avg
+
+
 def load_parse_xml(path):
     with open(path, 'rb') as f:
         obj = objectify.fromstring(f.read())
@@ -36,14 +42,20 @@ def load_parse_xml(path):
         return d
 
 
-def main():
+def test():
+    # load and average audio
+    audios = dir_contents(dev_audio)
+    df = load_average_audio(dev_audio + audios[0])
+    print(df)
+
+    # test loading first xml
     xmls = dir_contents(dev_xml)
     d = load_parse_xml(dev_xml + xmls[0])
     print(d)
 
 
 if __name__ == "__main__":
-    main()
+    test()
 
 
 # todo: import
